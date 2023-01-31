@@ -1,8 +1,19 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Mdiddleware
+app.use((req, res, next) => {
+  req.og = users[1];
+  next();
+});
+
 
 // <<<<<< Fake Database
 let users = {
@@ -18,7 +29,7 @@ let users = {
     id: '3',
     username: 'Ryuk'
   }
-}
+};
 
 let messages = {
   1: {
@@ -36,11 +47,10 @@ let messages = {
     text: 'Quiero pollito !!!',
     userId: '3',
   }
-}
+};
 //  <<<<<<
 
 
-app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('Hello World! \n Received a GET HTTP method');
@@ -61,7 +71,7 @@ app.delete('/', (req, res)=>{
 // User
 app.get('/users', (req, res) => {
   res.send(Object.values(users))
-  res.send('Hello user!!! \n Received a GET HTTP method');
+  // res.send('Hello user!!! \n Received a GET HTTP method');
 });
 
 app.post('/users', (req, res) => {
@@ -79,12 +89,12 @@ app.delete('/users', (req, res)=> {
 // User unique indentifiear
 app.get('/user/:userId', (req, res) => {
   res.send(users[req.params.userId])
-  res.send(`GET HTTP method received on user/${req.params.userId} resource`)
+  // res.send(`GET HTTP method received on user/${req.params.userId} resource`)
 })
 
 app.put('/user/:userId', (req, res) => {
   res.send(users[req.params.userId])
-  res.send(`PUT HTTP method received on user/${req.params.userId} resource`)
+  // res.send(`PUT HTTP method received on user/${req.params.userId} resource`)
 })
 
 app.delete('/user/:userId', (req, res) => {
@@ -100,6 +110,38 @@ app.get('/messages', (req, res) =>{
   res.send(Object.values(messages))
 })
 
-app.get('/message/:messageId', (req, res) =>{
+app.get('/messages/:messageId', (req, res) =>{
   res.send(messages[req.params.messageId].text)
+})
+
+app.post('/messages', (req, res) => {
+  const id = uuidv4();
+  const message = {
+    id,
+    text: req.body.text,
+    userId: req.og.id,
+  };
+
+  messages[id] = message;
+
+  return res.send(message);
+});
+
+app.delete('/messages/:messageId', (req, res) =>{
+  // Destructuring
+  const {
+    [req.params.messageId]: message,
+    ...otherMessages
+  } = messages;
+
+  const feedback= messages[req.params.messageId].text;
+
+  messages = otherMessages;
+  res.send(`Deleted messages: ${feedback}`);
+})
+
+//Sessions
+
+app.get('/session', (req, res) => {
+  res.send(users[req.me.id])
 })
