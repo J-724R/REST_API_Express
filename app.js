@@ -127,6 +127,13 @@ app.post('/messages', (req, res) => {
   return res.send(message);
 });
 
+app.put('/messages/:messageId', (req, res) => {
+  const indentifier = req.params.messageId
+
+  messages[indentifier].text = req.body.text;
+
+})
+
 app.delete('/messages/:messageId', (req, res) =>{
   // Destructuring
   const {
@@ -143,5 +150,5 @@ app.delete('/messages/:messageId', (req, res) =>{
 //Sessions
 
 app.get('/session', (req, res) => {
-  res.send(users[req.me.id])
+  res.send(users[req.og.id])
 })
