@@ -8,6 +8,8 @@ router.get('/', (req, res) =>{
   res.send(Object.values(req.context.models.messages))
 })
 
+  // Example on terminal 
+  // curl -X POST -H "Content-Type:application/json" http://localhost:3000/messages -d '{"text":"Quiero Pollito!!!"}'
 router.post('/', (req, res) => {
   const id = uuidv4();
   const message = {
