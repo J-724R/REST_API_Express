@@ -40,7 +40,6 @@ let messages = {
 //  <<<<<<
 
 
-
 app.use(cors());
 
 app.get('/', (req, res) => {
@@ -61,6 +60,7 @@ app.delete('/', (req, res)=>{
 
 // User
 app.get('/users', (req, res) => {
+  res.send(Object.values(users))
   res.send('Hello user!!! \n Received a GET HTTP method');
 });
 
@@ -77,7 +77,13 @@ app.delete('/users', (req, res)=> {
 })
 
 // User unique indentifiear
+app.get('/user/:userId', (req, res) => {
+  res.send(users[req.params.userId])
+  res.send(`GET HTTP method received on user/${req.params.userId} resource`)
+})
+
 app.put('/user/:userId', (req, res) => {
+  res.send(users[req.params.userId])
   res.send(`PUT HTTP method received on user/${req.params.userId} resource`)
 })
 
@@ -88,3 +94,12 @@ app.delete('/user/:userId', (req, res) => {
 app.listen(process.env.PORT, () =>
   console.log(`Example app listening on port ${process.env.PORT}!`),
 );
+
+// Messages
+app.get('/messages', (req, res) =>{
+  res.send(Object.values(messages))
+})
+
+app.get('/message/:messageId', (req, res) =>{
+  res.send(messages[req.params.messageId].text)
+})
